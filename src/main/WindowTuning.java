@@ -762,14 +762,36 @@ public class WindowTuning extends javax.swing.JFrame {
         // indek untuk kontur yang ditemukan
         // untuk penomoran file
         int idx=0;
-        
+        Rect rect_Crop0 = null;
         if (rect[0].area() > (int) limit_area) {
             //rect.
             Imgproc.rectangle(dw, rect[0].br(), rect[0].tl(), color, 2, 8, 0);
             Imgproc.rectangle(oby, rect[0].br(), rect[0].tl(), color, 2, 8, 0);
             System.out.println("kontur :" + 0 + " , x :" + rect[0].x + " , y :" + rect[0].y + " area :" + rect[0].area());
             
+                                //Proses Crop
+                    rect_Crop0 = new Rect(rect[0].x, rect[0].y, rect[0].width, rect[0].height);
+                    Mat image_roi = new Mat(img_awal, rect_Crop0);
+                    //Akhir Proses Crop
 
+                    // Proses save to gray
+                    Mat gray = image_roi.clone();
+                    Imgproc.cvtColor(image_roi, gray, Imgproc.COLOR_BGR2GRAY);
+                    
+                    //untuk mengetes apakah gambar bisa di write
+                    if(!Imgcodecs.imwrite(path + "crop_gray-" + idx + ".jpg", gray))
+                        System.out.println("failed to write file");
+                        
+
+                    // Process Resize
+                    Mat rz = new Mat();
+                    Size sz = new Size(28, 28);
+                    Imgproc.resize(gray, rz, sz);
+                    Imgcodecs.imwrite(path + "crop_gray_rz-" + idx + ".jpg", rz);
+
+                    // {Process Save to the HELL
+                    //System.out.println(i);
+                    Imgcodecs.imwrite(path + "crop-" + idx + ".jpg", image_roi);
             //crop
             
             //print
